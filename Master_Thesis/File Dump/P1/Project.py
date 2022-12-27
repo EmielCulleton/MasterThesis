@@ -54,11 +54,17 @@ tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 #---
 
-def print_soup(soup_content):
-    file = open(soup_content)
-    contents = file.read()
-    soup = bs(contents, features="xml")
-    print(soup.head)
+def get_words_from_soup(soup_content):
+    with open(soup_content) as soup_file:
+        soup = bs(soup_file, features="lxml")
+
+    word_soup = []
+    for strings in tqdm(soup.stripped_strings):
+        word_soup.append(repr(strings))
+
+    return word_soup
+
+get_words_from_soup("/home/emiel/data/encow16ax01.xml")
 
 
 

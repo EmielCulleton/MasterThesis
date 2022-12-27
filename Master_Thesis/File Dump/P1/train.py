@@ -12,37 +12,38 @@ from transformers import AdamW
 from transformers import get_linear_schedule_with_warmup
 
 import config
-import dataset
+import code.Master_Thesis.create_dataset as create_dataset
 import engine
 from model import EntityModel
 
 def process_data(data_path):
-    df = pd.read_csv(data_path, encoding="latin-1") #load file
-    df.loc[:, "Sentence #"] = df["Sentence #"].fillna(method="ffill")
+    df = config.TRAINING_FILE
+    #df = pd.read_csv(data_path, encoding="latin-1") #load file
+    df.loc[:, "text"] = df["text"].fillna(method="ffill")
 
-    enc_pos = preprocessing.LabelEncoder()
-    enc_tag = preprocessing.LabelEncoder()
+    enc_token = preprocessing.LabelEncoder()
+    enc_spans = preprocessing.LabelEncoder()
 
-    df.loc[:, "POS"] = enc_pos.fit_transform(df["POS"])
-    df.loc[:, "Tag"] = enc_tag.fit_transform(df["Tag"])
+    df.loc[:, "tokens"] = enc_token.fit_transform(df["tokens"])
+    df.loc[:, "spans"] = enc_spans.fit_transform(df["spans"])
 
     sentences = df.groupby("Sentence #")["Word"].apply(list).values
-    pos = df.groupby("Sentence #")["POS"].apply(list).values
-    tag = df.groupby("Sentence #")["Tag"].apply(list).values
-    return sentences, pos, tag, enc_pos, enc_tag
+    token = df.groupby("text")["token"].apply(list).values
+    spans = df.groupby("text")["spans"].apply(list).values
+    return sentences, token, spans, enc_token, enc_spans
 
 if __name__ == "__main__":
-    sentences, pos, tag, enc_pos, enc_tag = process_data(config.CSV_TRAINING_FILE) #load training file
+    sentences, token, spans, enc_token, enc_spans = process_data(config.TRAINING_FILE) #load training file
     
     meta_data = {
-        "enc_pos": enc_pos,
-        "enc_tag": enc_tag
+        "enc_token": enc_token,
+        "enc_spans": enc_spans
     }
 
     joblib.dump(meta_data, "meta.bin")
 
-    num_pos = len(list(enc_pos.classes_))
-    num_tag = len(list(enc_tag.classes_))
+    num_token = len(list(enc_token.classes_))
+    num_spans = len(list(enc_spans.classes_))
 
     (
         train_sentences,
@@ -53,7 +54,7 @@ if __name__ == "__main__":
         test_tag
     ) = model_selection.train_test_split(sentences, pos, tag, random_state=36, test_size=0.1)
 
-    train_dataset = dataset.EntityDataset(
+    train_dataset = create_dataset.EntityDataset(
         texts=train_sentences, pos=train_pos, tags=train_tag
     )
 
@@ -61,7 +62,7 @@ if __name__ == "__main__":
         train_dataset, batch_size=config.TRAIN_BATCH_SIZE, num_workers=4
     )
 
-    valid_dataset = dataset.EntityDataset(
+    valid_dataset = create_dataset.EntityDataset(
         texts=test_sentences, pos=test_pos, tags=test_tag
     )
 
@@ -97,7 +98,7 @@ if __name__ == "__main__":
     )
 
     best_loss = np.inf
-    for epoch in trange(range(config.EPOCHS)):
+    for epoch in range(config.EPOCHS):
         train_loss = engine.train_fn(train_data_loader, model, optimizer, device, scheduler)
         test_loss = engine.eval_fn(valid_data_loader, model, device)
         print(f"Train Loss = {train_loss} Valid Loss = {test_loss}")

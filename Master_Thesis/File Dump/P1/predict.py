@@ -4,12 +4,12 @@ import joblib
 import torch
 
 import config
-import dataset
+import code.Master_Thesis.create_dataset as create_dataset
 import engine
 from model import EntityModel
 from tqdm import tqdm, trange
 
-
+#this file should be adapted to loading in the xml file and predciting it's contents
 
 if __name__ == "__main__":
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     print(sentence)
     print(tokenized_sentence)
 
-    test_dataset = dataset.EntityDataset(
+    test_dataset = create_dataset.EntityDataset(
         texts=[sentence], 
         pos=[[0] * len(sentence)], 
         tags=[[0] * len(sentence)]

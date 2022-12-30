@@ -1,6 +1,7 @@
-import os
-from tqdm import tqdm
+# code Chris Emmery wrote in order to display contents of the COW corpus
 
+from tqdm import tqdm
+import os
 
 def read_cow(file):
 
@@ -18,9 +19,10 @@ def read_cow(file):
     with open('./cow_sents.txt', "r") as cow:
         data = cow.read()
         data_into_list = data.split("\n")
+        print(data_into_list)
+
+    # print(sent, content)
 
     os.remove('./cow_sents.txt')
 
-    return data_into_list, print("Done!"), print(data_into_list[0:6])
-
-cow_sample = read_cow("/home/emiel/data/encow16ax01_sample.xml")
+read_cow('/home/emiel/data/encow16ax01_sample.xml')

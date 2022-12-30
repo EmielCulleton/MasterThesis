@@ -24,4 +24,6 @@ Also so restructuring of the files as I have a lot of files that are currently o
 
 
 #### fifth commit:
-This commit is focused on implementing the training file into the model (https://huggingface.co/docs/transformers/tasks/token_classification#load-wnut-17-dataset)
+Implemented a script to read in the COW corpus and have every individual sentence be stored in a list.
+
+This commit is focused on implementing the training file into the model. This task has almost been completed. I am now looking into actually training the model. However I am running into ```AttributeError: 'BertTokenizerFast' object has no attribute 'to'```. I'll look into this tomorrow.

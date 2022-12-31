@@ -27,3 +27,7 @@ Also so restructuring of the files as I have a lot of files that are currently o
 Implemented a script to read in the COW corpus and have every individual sentence be stored in a list.
 
 This commit is focused on implementing the training file into the model. This task has almost been completed. I am now looking into actually training the model. However I am running into ```AttributeError: 'BertTokenizerFast' object has no attribute 'to'```. I'll look into this tomorrow.
+
+
+### sixth commit:
+Tags were created in order for the torch.tensor() to be able to append the tags. This was an issue because torch.tensor() requires ints, rather than strings. make_labels_integers(self): was made to do this. Issue now is that the sizes of the datasets don't seem to work for the model. This is for the 7th commit.

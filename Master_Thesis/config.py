@@ -10,7 +10,7 @@ from datasets import Dataset
 from datasets import load_dataset
 
 
-MAX_LEN = 128
+MAX_LEN = 750
 TRAIN_BATCH_SIZE = 32
 VALID_BATCH_SIZE = 8
 EPOCHS = 10
@@ -21,6 +21,6 @@ with open("/home/emiel/data/textwash_data.json", "r") as json_file_open:
     TRAINING_FILE = json.load(json_file_open)
 
 
-TOKENIZER = AutoTokenizer.from_pretrained("xlm-roberta-large")
-MODEL = AutoModelForTokenClassification.from_pretrained("xlm-roberta-large")
-CLASSIFIER = pipeline('ner', model=MODEL, tokenizer=TOKENIZER)
+# TOKENIZER = AutoTokenizer.from_pretrained("bert-base-uncased") #xlm-roberta-large
+# MODEL = AutoTokenizer.from_pretrained("bert-base-uncased")
+# # CLASSIFIER = pipeline('ner', model=MODEL, tokenizer=TOKENIZER)
